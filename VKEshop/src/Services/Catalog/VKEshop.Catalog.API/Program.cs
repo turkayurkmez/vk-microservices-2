@@ -1,4 +1,8 @@
 using VKEshop.Catalog.Application.Features.Products.GetAllProducts;
+using Microsoft.EntityFrameworkCore;
+using VKEshop.Catalog.Persistence.Data;
+using VKEshop.Catalog.Application.Contracts.Repository;
+using VKEshop.Catalog.Persistence.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,6 +14,9 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddMediatR(configuration => configuration.RegisterServicesFromAssemblyContaining<GetAllProductsQuery>());
 
+var connectionString = builder.Configuration.GetConnectionString("db");
+builder.Services.AddDbContext<VKEshopCatalogDb>(option => option.UseSqlServer(connectionString));
+builder.Services.AddScoped<IProductRepository, EFProductRepository>();
 
 var app = builder.Build();
 

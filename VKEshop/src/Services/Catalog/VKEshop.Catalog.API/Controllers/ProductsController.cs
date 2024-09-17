@@ -14,6 +14,8 @@ namespace VKEshop.Catalog.API.Controllers
         {
             GetAllProductsQuery request = new GetAllProductsQuery();
             var response = await mediator.Send(request);
+            //GetAllProductsQueryHandler handler = new GetAllProductsQueryHandler();
+            //var response = await handler.Handle(request, CancellationToken.None);
             return Ok(response);
         }
     }

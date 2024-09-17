@@ -5,16 +5,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using VKEshop.Catalog.Application.Contracts.Repository;
 using VKEshop.Catalog.Domain;
 
 namespace VKEshop.Catalog.Application.Features.Products.GetAllProducts
 {
-    public class GetAllProductsQueryHandler : IRequestHandler<GetAllProductsQuery, GetAllProductsResponse>
+    public class GetAllProductsQueryHandler(IProductRepository repository) : IRequestHandler<GetAllProductsQuery, GetAllProductsResponse>
     {
         //public IEnumerable<ProductCardDisplay> Execute(GetAllProductsQuery query)
         //{
 
-        //    //TODO 1: Veritabanına git, tüm ürünleri çek ve donüş değerine dönüştür.
+      
 
 
         //    return null;
@@ -22,13 +23,11 @@ namespace VKEshop.Catalog.Application.Features.Products.GetAllProducts
 
         public async Task<GetAllProductsResponse> Handle(GetAllProductsQuery request, CancellationToken cancellationToken)
         {
-            var products = new List<Product>
-            {
-                 new(){ Id=1, Name="A", Description="Ürün 1", ImageUrl="resimAdresi", Price=1, Rating=4.6},
-                 new(){ Id=1, Name="A", Description="Ürün 1", ImageUrl="resimAdresi", Price=1, Rating=4.6},
-                 new(){ Id=1, Name="A", Description="Ürün 1", ImageUrl="resimAdresi", Price=1, Rating=4.6},
+            var products = await repository.GetAllAsync();
 
-            }.AsEnumerable();
+            // TODO 1: Repository'ye buradan erişecek.
+            // TODO 2: db'den tüm ürünleri getirecek
+
 
             //var productResponse = products.Select(p => new ProductCardDisplay(
 
@@ -47,7 +46,7 @@ namespace VKEshop.Catalog.Application.Features.Products.GetAllProducts
 
             return  await Task.FromResult(getAllProductsResponse);
 
-            //TODO 1: Veritabanına git, tüm ürünleri çek ve donüş değerine dönüştür.
+         
         }
     }
 }

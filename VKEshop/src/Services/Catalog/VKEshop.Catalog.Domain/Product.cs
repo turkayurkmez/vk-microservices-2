@@ -19,8 +19,9 @@ namespace VKEshop.Catalog.Domain
         public bool? IsActive { get; set; } = true;
 
         public string? ImageUrl { get; set; }
+        public Category? Category { get; set; }
 
-
+        public int? CategoryId { get; set; }
 
     }
 }
