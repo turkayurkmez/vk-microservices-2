@@ -1,7 +1,12 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using VKEshop.Catalog.Application.Features.Products.CreateNewProduct;
+using VKEshop.Catalog.Application.Features.Products.DeleteProduct;
 using VKEshop.Catalog.Application.Features.Products.GetAllProducts;
+using VKEshop.Catalog.Application.Features.Products.GetProductById;
+using VKEshop.Catalog.Application.Features.Products.SearchProductByName;
+using VKEshop.Catalog.Application.Features.Products.UpdateProduct;
 
 namespace VKEshop.Catalog.API.Controllers
 {
@@ -18,5 +23,59 @@ namespace VKEshop.Catalog.API.Controllers
             //var response = await handler.Handle(request, CancellationToken.None);
             return Ok(response);
         }
+
+        [HttpGet("{id:int}")]
+        public async Task<IActionResult> Get(int id)
+        {
+            var request = new GetProductByIdQuery(id);
+            var response = await mediator.Send(request);
+            if (response == null)
+            {
+                return NotFound();
+            }
+            return Ok(response);
+        }
+
+        [HttpGet("search/{name}")]
+        public async Task<IActionResult> Search(string name)
+        {
+            var request = new SearchProductsByNameQuery(name);
+            var respnse = await mediator.Send(request);
+            return Ok(respnse);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Create(CreateNewProductCommand command)
+        {
+            if (ModelState.IsValid)
+            {
+                var lastId = await mediator.Send(command);
+                return CreatedAtAction(nameof(Get), routeValues: new { id = lastId }, command);
+            }
+
+            return BadRequest();
+        }
+
+        [HttpPut("{id:int}")]
+        public async Task<IActionResult> Update(int id, UpdateProductCommand command)
+        {
+            if (ModelState.IsValid)
+            {
+                await mediator.Send(command);
+                return NoContent();
+            }
+            return BadRequest();
+        }
+
+        [HttpDelete("{id:int}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            DeleteProductCommand command = new DeleteProductCommand(id);
+            await mediator.Send(command);
+            return NoContent();
+
+        }
+
+
     }
 }
