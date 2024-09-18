@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using VKEshop.Catalog.Persistence.Data;
 using VKEshop.Catalog.Application.Contracts.Repository;
 using VKEshop.Catalog.Persistence.Repositories;
+using MassTransit;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,6 +18,20 @@ builder.Services.AddMediatR(configuration => configuration.RegisterServicesFromA
 var connectionString = builder.Configuration.GetConnectionString("db");
 builder.Services.AddDbContext<VKEshopCatalogDb>(option => option.UseSqlServer(connectionString));
 builder.Services.AddScoped<IProductRepository, EFProductRepository>();
+
+builder.Services.AddMassTransit(config =>
+{
+    config.UsingRabbitMq((context, configurator) =>
+    {
+        configurator.Host("localhost", "/", h =>
+        {
+            h.Username("guest");
+            h.Password("guest");
+        });
+
+        configurator.ConfigureEndpoints(context);
+    });
+});
 
 var app = builder.Build();
 

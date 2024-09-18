@@ -1,0 +1,17 @@
+﻿İstemci, Basket microservice'i ile ne yapacak?
+
+ 1. Sepete Ürün Ekleyecek
+     BasketItem 
+     {
+       int productId,
+       int quantity
+     }
+
+     BasketCollection{
+        BasketItem (list)
+     }
+     AddToBasket(BasketItem) =>   BasketCollection
+     
+2. Sepeti temizlemek....
+
+3. Sepeti almak.....

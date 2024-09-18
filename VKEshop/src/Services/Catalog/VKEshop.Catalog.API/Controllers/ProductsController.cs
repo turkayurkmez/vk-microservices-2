@@ -1,18 +1,21 @@
-﻿using MediatR;
+﻿using MassTransit;
+using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using VKEshop.Catalog.Application.Features.Products.CreateNewProduct;
 using VKEshop.Catalog.Application.Features.Products.DeleteProduct;
+using VKEshop.Catalog.Application.Features.Products.DiscountProductPrice;
 using VKEshop.Catalog.Application.Features.Products.GetAllProducts;
 using VKEshop.Catalog.Application.Features.Products.GetProductById;
 using VKEshop.Catalog.Application.Features.Products.SearchProductByName;
 using VKEshop.Catalog.Application.Features.Products.UpdateProduct;
+using VKEshop.MessageBus;
 
 namespace VKEshop.Catalog.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ProductsController(IMediator mediator) : ControllerBase
+    public class ProductsController(IMediator mediator, IPublishEndpoint publishEndpoint) : ControllerBase
     {
         [HttpGet]
         public async Task<IActionResult> Get()
@@ -66,6 +69,31 @@ namespace VKEshop.Catalog.API.Controllers
             }
             return BadRequest();
         }
+
+        [HttpPut("discount/{id:int}")]
+        public async Task<IActionResult> DiscountPrice(int id, DiscountProductPriceCommand command)
+        {
+            if (ModelState.IsValid)
+            {
+              var response =  await mediator.Send(command);
+
+                //ürün fiyatında indirim yapıldıktan sonra; broker'a bu bilgiyi gönderdik:
+                var @event = new ProductPriceDiscountedEvent
+                {
+                    ProductPriceDiscountCommand = new ProductPriceDiscountCommand
+                    {
+                        NewPrice = response.NewPrice,
+                        OldPrice = response.OldPrice,
+                        ProductId = response.Id
+                    }
+                };
+               await  publishEndpoint.Publish(@event);
+
+              return Ok(response);
+            }
+            return BadRequest();
+        }
+
 
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> Delete(int id)
