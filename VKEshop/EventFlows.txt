@@ -1,0 +1,15 @@
+﻿
+Sipariş Verildiğinde gerçekleşecek olay akışı:
+
+1. Orders microservice'inden OrderCreatedEvent (OrderCreatedCommand(OrderId, CustomerId, CreditCardInfo, OrderItems(ProductId, Quantity) [])) fırlar.
+2. Stock servisi, OrderCreatedEvent olayını Consume eder ve stok sayısını kontrol eder
+   A. Stok uygundur. StockAvailableEvent (StockAvailableCommand(CustomerId, CreditCardInfo, TotalPrice) fırlar.
+   B. Stok uygun değil. StockNotAvailableEvent (StockNotAvailableCommand(OrderId))
+3. Payment servisi StockAvailableEvent olayını consume eder. 
+   A. Banka entegrasyonu başarılı olur ve PaymentSuccessedEvent(PaymentSuccessedCommand( OrderId, CustomerId))  fırlar.
+   B. .................. başarısız olur ve PaymentFailedEvent(PaymentFailedCommand(OrderId, Reason)) fırlar
+4. Orders servisi, 
+     A. PaymentSuccessedEvent olayını Consume eder ve veritabanında, siparişi tamamlanmış olarak etiketler
+     B. StockNotAvailableEvent olayını Consume eder ve veritabanında, siparişi RED olarak etiketler
+     C. PaymentFailedEvent olayını Consume eder ve veritabanında, siparişi RED olarak etiketler
+     

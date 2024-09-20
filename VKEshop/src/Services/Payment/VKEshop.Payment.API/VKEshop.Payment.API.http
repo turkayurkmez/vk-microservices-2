@@ -1,0 +1,6 @@
+@VKEshop.Payment.API_HostAddress = http://localhost:5148
+
+GET {{VKEshop.Payment.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
