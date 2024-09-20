@@ -13,7 +13,7 @@ using VKEshop.MessageBus;
 
 namespace VKEshop.Catalog.API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
     public class ProductsController(IMediator mediator, IPublishEndpoint publishEndpoint) : ControllerBase
     {

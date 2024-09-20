@@ -15,7 +15,17 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddMediatR(configuration => configuration.RegisterServicesFromAssemblyContaining<GetAllProductsQuery>());
 
+
+var host = builder.Configuration.GetSection("DefaultHostName").Value;
+var pass = builder.Configuration.GetSection("DefaultPassword").Value;
+
+
 var connectionString = builder.Configuration.GetConnectionString("db");
+connectionString = connectionString?.Replace("[HOST]", host)
+                                   .Replace("[PASS]", pass);
+
+
+
 builder.Services.AddDbContext<VKEshopCatalogDb>(option => option.UseSqlServer(connectionString));
 builder.Services.AddScoped<IProductRepository, EFProductRepository>();
 
@@ -23,7 +33,7 @@ builder.Services.AddMassTransit(config =>
 {
     config.UsingRabbitMq((context, configurator) =>
     {
-        configurator.Host("localhost", "/", h =>
+        configurator.Host("rabbit-mq", "/", h =>
         {
             h.Username("guest");
             h.Password("guest");
@@ -35,12 +45,17 @@ builder.Services.AddMassTransit(config =>
 
 var app = builder.Build();
 
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+var scope = app.Services.CreateScope();
+var dbContext = scope.ServiceProvider.GetRequiredService<VKEshopCatalogDb>();
+dbContext.Database.Migrate();
 
 app.UseAuthorization();
 

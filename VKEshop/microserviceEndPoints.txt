@@ -1,0 +1,8 @@
+Catalog: http://localhost:5100/products
+Catalog: http://localhost:5100/products/1
+Catalog: http://localhost:5100/products/search/name        
+Basket: http://localhost:5101
+Orders: http://localhost:5102
+Payment: http://localhost:5103
+Stock: http://localhost:5104
+

@@ -1,0 +1,16 @@
+{
+  "profiles": {
+    "Docker Compose": {
+      "commandName": "DockerCompose",
+      "commandVersion": "1.0",
+      "serviceActions": {
+        "vkeshop.catalog.api": "StartDebugging",
+        "vkeshop.basket.api": "StartDebugging",
+        "vkeshop.orders.api": "StartDebugging",
+        "vkeshop.payment.api": "StartDebugging",
+        "vkeshop.stock.api": "StartDebugging",
+        "vkeshop.gateway.yarp": "StartDebugging"
+      }
+    }
+  }
+}

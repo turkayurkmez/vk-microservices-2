@@ -1,0 +1,10 @@
+﻿@address = http://localhost:5054
+@access_token = CfDJ8IcZNyHUcbNHkWk-gwqdCVtt3yGbQqqy6JEDHVjckuyVmWYmiVoZqY8tKMcgi1J-qt8jDzYtf2IvlD96aAZgLNBX0hUTAMnZNlWxqNP0LFqF5uLfGQEIv8eGXnjaw9rMA3yVs4pcn1XfDlPyt0UUZ-n0YP0mjyejHblxuA7u0d0E6gt237Kurql_GV3WaLwggwVGKx_WvtYSYLz7plJzWxvwlTxF20hfuKW6n-I5VGFtlgEf7Hh4y5FUvROUMlwvy8oAwLAV-QxNtJugcXEapjc
+
+GET {{address}}/login
+
+### Proxy products
+
+GET {{address}}/products
+Authorization: Bearer {{access_token}}
+

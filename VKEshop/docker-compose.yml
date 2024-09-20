@@ -1,0 +1,61 @@
+version: '3.4'
+
+services:
+  ms-sql-server:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    
+  rabbit-mq:
+    image: rabbitmq:3.10-management
+        
+  vkeshop.catalog.api:
+    image: ${DOCKER_REGISTRY-}vkeshopcatalogapi
+    build:
+      context: .
+      dockerfile: src/Services/Catalog/VKEshop.Catalog.API/Dockerfile
+    environment:
+      DefaultHostName: "ms-sql-server"
+      DefaultPassword: "pa55W0rd"
+    depends_on:
+     - ms-sql-server
+     - rabbit-mq
+
+  vkeshop.basket.api:
+    image: ${DOCKER_REGISTRY-}vkeshopbasketapi
+    build:
+      context: .
+      dockerfile: src/Services/Basket/VKEshop.Basket.API/Dockerfile
+    depends_on:
+     - rabbit-mq
+
+  vkeshop.orders.api:
+    image: ${DOCKER_REGISTRY-}vkeshopordersapi
+    build:
+      context: .
+      dockerfile: src/Services/Order/VKEshop.Orders.API/Dockerfile
+    depends_on:
+     - rabbit-mq 
+
+  vkeshop.payment.api:
+    image: ${DOCKER_REGISTRY-}vkeshoppaymentapi
+    build:
+      context: .
+      dockerfile: src/Services/Payment/VKEshop.Payment.API/Dockerfile    
+    depends_on:
+     - rabbit-mq
+
+
+  vkeshop.stock.api:
+    image: ${DOCKER_REGISTRY-}vkeshopstockapi
+    build:
+      context: .
+      dockerfile: src/Services/Stock/VKEshop.Stock.API/Dockerfile
+    depends_on:
+     - rabbit-mq
+
+
+  vkeshop.gateway.yarp:
+    image: ${DOCKER_REGISTRY-}vkeshopgatewayyarp
+    build:
+      context: .
+      dockerfile: src/Gateways/VKEshop.Gateway.YARP/Dockerfile
+
